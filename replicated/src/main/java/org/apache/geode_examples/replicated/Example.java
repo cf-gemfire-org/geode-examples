@@ -15,6 +15,7 @@
 package org.apache.geode_examples.replicated;
 
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 import java.util.stream.IntStream;
 
@@ -32,13 +33,17 @@ public class Example {
 
   public static void main(String[] args) {
     // connect to the locator using default port 10334
-    ClientCache cache = new ClientCacheFactory().addPoolLocator("127.0.0.1", 10334)
+    Properties credentials = new Properties();
+    credentials.setProperty("security-username", "cluster_operator_h2hqOQqOdtSPK33vJWQUbg");
+    credentials.setProperty("security-client-auth-init", GatewayAuthInit.class.getName());
+    //credentials.setProperty("security-password", "aplZqVgrTDRwkVCs2Eqqg");
+    ClientCache cache = new ClientCacheFactory(credentials).addPoolLocator("tcp.phthaloblue.cf-app.com", 1072)
         .set("log-level", "WARN").create();
 
     // create a local region that matches the server region
     Region<Integer, String> region =
         cache.<Integer, String>createClientRegionFactory(ClientRegionShortcut.PROXY)
-            .create("example-region");
+            .create("replicated");
 
     Example example = new Example(region);
     example.insertValues(10);
