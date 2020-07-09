@@ -14,15 +14,14 @@
  */
 package org.apache.geode_examples.clientSecurity;
 
-import java.util.Properties;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import org.apache.geode.LogWriter;
 import org.apache.geode.distributed.DistributedMember;
 import org.apache.geode.security.AuthInitialize;
 import org.apache.geode.security.AuthenticationFailedException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.Properties;
 
 public class ExampleAuthInit implements AuthInitialize {
 
@@ -30,8 +29,6 @@ public class ExampleAuthInit implements AuthInitialize {
 
   private static final String USER_NAME = "security-username";
   private static final String PASSWORD = "security-password";
-
-  private static final String INSECURE_PASSWORD_FOR_EVERY_USER = "123";
 
   /**
    * The implementer would use their existing infrastructure (e.g., ldap) here to populate these
@@ -41,14 +38,8 @@ public class ExampleAuthInit implements AuthInitialize {
   @Override
   public Properties getCredentials(Properties securityProps) throws AuthenticationFailedException {
     Properties credentials = new Properties();
-    String userName = securityProps.getProperty(USER_NAME);
-    if (userName == null) {
-      throw new AuthenticationFailedException(
-          "ExampleAuthInit: user name property [" + USER_NAME + "] not set.");
-    }
-    credentials.setProperty(USER_NAME, userName);
-    credentials.setProperty(PASSWORD, INSECURE_PASSWORD_FOR_EVERY_USER);
-    logger.info("SampleAuthInit: successfully obtained credentials for user " + userName);
+    credentials.setProperty(USER_NAME, "developer_L7yKDmDWeCfB27YT2qjGRw");
+    credentials.setProperty(PASSWORD, "skkAlK2x2sVLjGDb1MyIA");
     return credentials;
   }
 

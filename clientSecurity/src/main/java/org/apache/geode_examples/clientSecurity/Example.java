@@ -24,6 +24,7 @@ import org.apache.geode.cache.Region;
 import org.apache.geode.cache.client.ClientCache;
 import org.apache.geode.cache.client.ClientCacheFactory;
 import org.apache.geode.cache.client.ClientRegionShortcut;
+import org.apache.geode.cache.client.proxy.ProxySocketFactories;
 
 public class Example implements AutoCloseable {
   private static final Logger logger = LogManager.getLogger();
@@ -60,14 +61,23 @@ public class Example implements AutoCloseable {
     props.setProperty("security-username", username);
     props.setProperty("security-client-auth-init", ExampleAuthInit.class.getName());
     props.setProperty("ssl-enabled-components", "all");
-    props.setProperty("ssl-keystore", "keystore.jks");
-    props.setProperty("ssl-keystore-password", "password");
-    props.setProperty("ssl-truststore", "truststore.jks");
-    props.setProperty("ssl-truststore-password", "password");
+    props.setProperty("ssl-keystore", "/tmp/keystore.jks");
+    props.setProperty("ssl-keystore-password", "zQ23I9NqphrlJzKsZiQiQWoiXVCzHW");
+    props.setProperty("ssl-truststore", "/tmp/truststore.jks");
+    props.setProperty("ssl-truststore-password", "jU5EnTnxzGIJufIy5AcNClZ9FrG5yy");
 
     // connect to the locator using default port 10334
-    cache = new ClientCacheFactory(props).setPoolSubscriptionEnabled(true)
-        .addPoolLocator("localhost", 10334).create();
+    String locatorHostname = new String(
+        "8a0fbd68-27bd-43b5-99d4-0553ce27a12e.locator.royalorange-services-subnet.service-instance-6601d76a-8140-4bb1-91ad-8c6771986282.bosh");
+    int locatorPort = 55221;
+
+    String FQDN = new String("tcp.royalorange.cf-app.com");
+    int SNIport = 1076;
+
+    cache = new ClientCacheFactory(props).addPoolLocator(locatorHostname, locatorPort)
+        .setPoolSocketFactory(ProxySocketFactories.sni(FQDN, SNIport)).set("log-level", "WARN")
+        .create();
+
     region1 = cache.<String, String>createClientRegionFactory(ClientRegionShortcut.CACHING_PROXY)
         .create(REGION1);
     region2 = cache.<String, String>createClientRegionFactory(ClientRegionShortcut.CACHING_PROXY)
